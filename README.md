@@ -15,6 +15,26 @@ Composite GitHub Action that publishes [tessl](https://tessl.io) tiles with smar
 - uses: jbaruch/tessl-smart-publish@v1
 ```
 
+For tiles in a subdirectory:
+
+```yaml
+- uses: jbaruch/tessl-smart-publish@v1
+  with:
+    path: tiles/my-tile
+```
+
+## Inputs
+
+| Input | Description | Default |
+|---|---|---|
+| `path` | Path to the tile directory | `.` |
+
+## Outputs
+
+| Output | Description |
+|---|---|
+| `version` | The version that was published (including auto-bumped) |
+
 ## Requirements
 
 - `tessl` must be on PATH (use `tesslio/setup-tessl`)
