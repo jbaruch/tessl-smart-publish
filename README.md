@@ -12,7 +12,6 @@ Composite GitHub Action that publishes [tessl](https://tessl.io) tiles with smar
 - uses: tesslio/setup-tessl@v2
   with:
     token: ${{ secrets.TESSL_API_TOKEN }}
-- run: tessl skill review --threshold 85  # optional
 - uses: jbaruch/tessl-smart-publish@v1
 ```
 
