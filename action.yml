@@ -25,6 +25,8 @@ runs:
     - name: Smart publish
       id: publish
       shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         TILE_PATH="${{ inputs.path }}"
         TILE_JSON="$TILE_PATH/tile.json"
