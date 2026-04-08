@@ -2,7 +2,15 @@
 
 Composite GitHub Action that publishes [tessl](https://tessl.io) tiles with automatic patch versioning.
 
-On every push, the action queries the registry for the latest published version, bumps patch, updates `tile.json`, publishes, and commits the version back (with `[skip ci]`).
+## What this does
+
+Every push changes the tile's content, and distinct content should have a distinct version. This action handles that automatically: it queries the registry for the latest published version, bumps patch, updates `tile.json`, publishes, and commits the version back (with `[skip ci]`).
+
+## What this doesn't do
+
+This is not a replacement for proper version management. It's a catch-all for chore commits and routine changes where you don't intend to craft a new release. There's no option for minor or major bumps on purpose.
+
+For a real release — bump the version in `tile.json` yourself. The action will detect that the local version is ahead of the registry and publish it as-is.
 
 ## Usage
 
