@@ -34,11 +34,22 @@ runs:
         LOCAL=$(jq -r .version "$TILE_JSON")
 
         # Query registry for the latest published version.
-        # Trailing `|| true` absorbs the pipefail that would otherwise trigger on a
-        # first publish: `tessl tile info` exits 1 on 404, `grep` exits 1 on no match,
-        # and the step shell runs with `-e -o pipefail`, so the pipeline failure would
-        # abort the script before we reach the `if [ -z "$LATEST" ]` branch below.
-        LATEST=$(tessl tile info "$TILE_NAME" 2>/dev/null | grep 'Latest Version' | awk '{print $NF}' || true)
+        # Only treat the expected "not found" case as first publish; surface all
+        # other failures so auth/network/CLI issues do not get silently masked.
+        if INFO_OUTPUT=$(tessl tile info "$TILE_NAME" 2>&1); then
+          LATEST=$(printf '%s\n' "$INFO_OUTPUT" | grep 'Latest Version' | awk '{print $NF}')
+          if [ -z "$LATEST" ]; then
+            echo "::error::Unable to determine latest published version for $TILE_NAME from 'tessl tile info' output."
+            exit 1
+          fi
+        else
+          if printf '%s\n' "$INFO_OUTPUT" | grep -qi '404'; then
+            LATEST=""
+          else
+            echo "::error::Failed to query Tessl registry for $TILE_NAME: $INFO_OUTPUT"
+            exit 1
+          fi
+        fi
 
         if [ -z "$LATEST" ]; then
           # First publish — use version from tile.json as-is
